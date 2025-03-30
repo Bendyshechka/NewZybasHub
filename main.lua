@@ -170,7 +170,7 @@ local Button = Tab522:CreateButton({
                         obj.HingePart.CanCollide = false
                         obj.HingePart.Glove.CanCollide = false
                         obj.HingePart.Glove.CFrame = player.Character.HumanoidRootPart.CFrame
-                        wait(0.2) -- Задержка между телепортациями
+                        wait(1) -- Задержка между телепортациями
                     end
                 end
             elseif obj.Name == "MasteryTurret" then
