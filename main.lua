@@ -1051,4 +1051,59 @@ for i = 1, 3 do
 })
 end
 
+local Tab4 = Window:MakeTab({
+	Name = "Машина",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+local Section11 = Tab4:AddSection({
+	Name = "Ваша машина"
+})
+
+Tab4:AddToggle({
+	Name = "Отображение хит бокса машины",
+	Default = false,
+	Callback = function(Value)
+		Sigma = Value
+		Run.RenderStepped:Connect(function()
+			if Sigma then
+				if game.Players.LocalPlayer.Character:FindFirstChild("CarKeysCar") then
+					
+					if game.Players.LocalPlayer.Character.CarKeysCar:FindFirstChild("Hitbox") then
+						game.Players.LocalPlayer.Character.CarKeysCar.Hitbox.Transparency = 0.5
+					end
+				end
+			else
+				if game.Players.LocalPlayer.Character:FindFirstChild("CarKeysCar") then
+					if game.Players.LocalPlayer.Character.CarKeysCar:FindFirstChild("Hitbox") then
+						game.Players.LocalPlayer.Character.CarKeysCar.Hitbox.Transparency = 1
+					end
+				end
+			end
+		end)
+	end    
+})
+
+Tab4:AddSlider({
+	Name = "Увеличить хит бокс машины",
+	Min = 1,
+	Max = 20,
+	Default = 1,
+	Color = Color3.fromRGB(255,255,255),
+	Increment = 1,
+	ValueName = "Имба",
+	Callback = function(Value)
+		Sigma1 = Value
+		Run.RenderStepped:Connect(function()
+				if game.Players.LocalPlayer.Character:FindFirstChild("CarKeysCar") then
+					
+					if game.Players.LocalPlayer.Character.CarKeysCar:FindFirstChild("Hitbox") then
+						game.Players.LocalPlayer.Character.CarKeysCar:FindFirstChild("Hitbox").Size = Vector3.new(8, 5, 14) * Sigma1
+					end
+				end
+		end)
+	end    
+})
+
 end
