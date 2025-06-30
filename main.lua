@@ -45,7 +45,7 @@ local success, errorMsg = pcall(function()
 end)
 
 if not success then
-    OrionLib:MakeNotification({Name = "Предупреждение",Content = "Ваш чит не поддерживает функции защиты от античита слеп батлса.",Image = "rbxassetid://7733658504",Time = 5})
+    OrionLib:MakeNotification({Name = "Предупреждение",Content = "Ваш чит не поддерживает функции защиты от античита слеп батлса.",Image = "rbxassetid://7733658504",Time = 15})
 end
 
 
