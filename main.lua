@@ -85,6 +85,83 @@ local Tab2 = Window:MakeTab({
 	PremiumOnly = false
 })
 
+local Roles = {
+	["BELOVED FAN <3"] = "Обычный игрок",
+	["Early Supporter"] = "Ежегодный поддержчик",
+	["Content Creator"] = "Создатель контента",
+	Translator = "Переводчик",
+	["Watch Analytics"] = "Смотрители аналистики",
+	["Pro Supporter"] = "Про поддержчик",
+	Modeller = "Модельер",
+	Animator = "Аниматор",
+	Tester = "Тестер",
+	["Tester Manager"] = "Менеджер тестер",
+	["Trial Staff"] = "Учебный персонал",
+	["Junior Staff"] = "Младший персонал",
+	Staff = "Персонал",
+	["Senior Staff"] = "Главный персонал",
+	["Staff Supervisor"] = "Руководитель персонала",
+	Artist = "Артист",
+	OVERSEER = "Надзорщик",
+	analytics = "Аналитик",
+	BOBA = "Боба",
+	VFX = "ВФС Создатель",
+	Builder = "Билдер",
+	Developer = "Разработчик",
+	["Lead Developer"] = "Главный разработчик",
+	Owner = "Да блять ТЕНЦЕЛЛ!"
+}
+
+local groupID = 9950771
+local playerAddedConnection = nil
+
+Tab2:AddToggle({
+    Name = "Авто-оповещение об персонале",
+    Default = false,
+    Callback = function(Value)
+        -- Отключаем старый коннект, если есть
+        if playerAddedConnection then
+            playerAddedConnection:Disconnect()
+            playerAddedConnection = nil
+        end
+
+        if Value then
+            -- Проверяем текущих игроков
+            for _, player in pairs(game.Players:GetPlayers()) do
+                if player:IsInGroup(groupID) then
+                    local role = player:GetRoleInGroup(groupID)
+                    if role ~= "BELOVED FAN <3" then
+                        local roleName = Roles[role] or role
+                        OrionLib:MakeNotification({
+                            Name = "Опасность!",
+                            Content = player.Name .. " имеет ранг - " .. roleName,
+                            Image = "rbxassetid://7733658504",
+                            Time = 5
+                        })
+                    end
+                end
+            end
+
+            -- Настраиваем отслеживание новых игроков
+            playerAddedConnection = game.Players.PlayerAdded:Connect(function(player)
+                task.wait(1) -- Даем время на загрузку данных
+                if player:IsInGroup(groupID) then
+                    local role = player:GetRoleInGroup(groupID)
+                    if role ~= "BELOVED FAN <3" then
+                        local roleName = Roles[role] or role
+                        OrionLib:MakeNotification({
+                            Name = "Опасность!",
+                            Content = player.Name .. " имеет ранг - " .. roleName,
+                            Image = "rbxassetid://7733658504",
+                            Time = 5
+                        })
+                    end
+                end
+            end)
+        end
+    end
+})
+
 Tab2:AddDropdown({
 	Name = "Анти войд",
 	Default = "Normal",
@@ -1039,37 +1116,6 @@ KickAllFirework = TabFire:AddToggle({
     end
 })
 
-local Tab3 = Window:MakeTab({
-	Name = "Точки телепорта",
-	Icon = "rbxassetid://4483345998",
-	PremiumOnly = false
-})
-
-local tps = {}
-for i = 1, 3 do
-	tps[i] = "NONE"
-	Tab3:AddButton({
-		Name = "Поставить точку #" .. i,
-		Callback = function()
-      		tps[i] = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
-			OrionLib:MakeNotification({Name = "Успешно",Content = "Точка установлена",Image = "rbxassetid://7733658504",Time = 5})
-  		end    
-})
-end
-for i = 1, 3 do
-	Tab3:AddButton({
-		Name = "Телепортироватся на точку #" .. i,
-		Callback = function()
-      		if tps[i] == "NONE" then
-				OrionLib:MakeNotification({Name = "Ошибка",Content = "Точка не установлена",Image = "rbxassetid://7733658504",Time = 5})
-			else
-				game.Players.LocalPlayer.Character.HumanoidRootPart:PivotTo(tps[i])
-			end
-			
-  		end    
-})
-end
-
 local Tab4 = Window:MakeTab({
 	Name = "Машина",
 	Icon = "rbxassetid://4483345998",
@@ -1124,6 +1170,88 @@ Tab4:AddSlider({
 		end)
 	end    
 })
+
+local Tab5 = Window:MakeTab({
+	Name = "Пилоу",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+
+
+Tab5:AddSlider({
+	Name = "Кол-во подушек",
+	Min = 1,
+	Max = 5000,
+	Default = 50,
+	Color = Color3.fromRGB(255,255,255),
+	Increment = 1,
+	ValueName = "Подушки",
+	Callback = function(Value)
+		PilowsToGive = Value
+	end    
+})
+
+Tab5:AddButton({
+	Name = "Выдать подушки",
+	Callback = function()
+		if game.Players.LocalPlayer.leaderstats.Glove.Value == "Pillow" then
+			if game.Players.LocalPlayer.Character:FindFirstChild("isInArena") and game.Players.LocalPlayer.Character:FindFirstChild("isInArena").Value == true then
+				for i = 1, tonumber(PilowsToGive) do
+					game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("PillowEvent"):FireServer("AddPillow")
+				end
+			else
+				OrionLib:MakeNotification({
+                Name = "Ошибка",
+                Content = "Вы должны быть на арене",
+                Image = "rbxassetid://7733658504",
+                Time = 5
+            })
+			end
+		else
+			OrionLib:MakeNotification({
+                Name = "Ошибка",
+                Content = "У вас должна быть экипирована пилоу",
+                Image = "rbxassetid://7733658504",
+                Time = 5
+            })
+		end
+  	end    
+})
+Tab5:AddParagraph("Предупреждение","Если выбрать большое кол-во подушек на выдачу и закликивать выдачу то будет пинг")
+
+
+local Tab3 = Window:MakeTab({
+	Name = "Точки телепорта",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+local tps = {}
+for i = 1, 3 do
+	tps[i] = "NONE"
+	Tab3:AddButton({
+		Name = "Поставить точку #" .. i,
+		Callback = function()
+      		tps[i] = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+			OrionLib:MakeNotification({Name = "Успешно",Content = "Точка установлена",Image = "rbxassetid://7733658504",Time = 5})
+  		end    
+})
+end
+for i = 1, 3 do
+	Tab3:AddButton({
+		Name = "Телепортироватся на точку #" .. i,
+		Callback = function()
+      		if tps[i] == "NONE" then
+				OrionLib:MakeNotification({Name = "Ошибка",Content = "Точка не установлена",Image = "rbxassetid://7733658504",Time = 5})
+			else
+				game.Players.LocalPlayer.Character.HumanoidRootPart:PivotTo(tps[i])
+			end
+			
+  		end    
+})
+end
+
 
 
 local Tab7 = Window:MakeTab({
