@@ -1220,6 +1220,70 @@ Tab5:AddButton({
 })
 Tab5:AddParagraph("Предупреждение","Если выбрать большое кол-во подушек на выдачу и закликивать выдачу то будет пинг")
 
+local TabSnow = Window:MakeTab({
+	Name = "Снег",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+TabSnow:AddTextbox({
+	Name = "Игрок",
+	Default = "Юзер",
+	TextDisappear = true,
+	Callback = function(Value)
+		local targetAbbreviation = Value
+local targetPlayer
+for _, v in pairs(game.Players:GetPlayers()) do
+if string.sub(v.Name, 1, #targetAbbreviation):lower() == targetAbbreviation:lower() then
+targetPlayer = v
+break
+end
+end
+if targetPlayer then
+PlayerKSpamSnow = targetPlayer.Name
+OrionLib:MakeNotification({Name = "Успешно",Content = "Найден игрок [ "..PlayerKSpamSnow.." ]",Image = "rbxassetid://7733658504",Time = 5})
+else
+OrionLib:MakeNotification({Name = "Ошибка",Content = "Игрок не найден",Image = "rbxassetid://7733658504",Time = 5})
+end
+	end	  
+})
+
+TabSnow:AddButton({
+	Name = "Начать спам ударами",
+	Callback = function()
+      	if game.Players.LocalPlayer.leaderstats.Glove.Value == "Snow" then
+			if game.Players.LocalPlayer.Character:FindFirstChild("isInArena") and game.Players.LocalPlayer.Character:FindFirstChild("isInArena").Value == false then
+				firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, workspace.Lobby.Teleport1, 0)
+				firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, workspace.Lobby.Teleport1, 1)
+			end
+			wait(1)
+			if game.Players:FindFirstChild(PlayerKSpamSnow) then
+				local connection
+				task.spawn(function()
+					connection = Run.RenderStepped:Connect(function()
+						game.Players.LocalPlayer.Character.HumanoidRootPart:PivotTo(game.Players:FindFirstChild(PlayerKSpamSnow).Character.HumanoidRootPart.CFrame)
+						task.wait()
+					end)
+				end)
+				task.spawn(function()
+					wait(5)
+					connection:Disconnect()
+				end)
+				wait(0.5)
+				task.spawn(function()
+					for i = 1, 70 do
+						local Hit = game:GetService("ReplicatedStorage").SnowHit
+						if Hit then
+							Hit:FireServer(game.Players:FindFirstChild(PlayerKSpamSnow).Character.HumanoidRootPart)
+						end
+					end
+				end)
+			end
+		else
+			OrionLib:MakeNotification({Name = "Ошибка",Content = "У вас должен быть экипирован снег!",Image = "rbxassetid://7733658504",Time = 5})
+		end
+  	end    
+})
 
 local Tab3 = Window:MakeTab({
 	Name = "Точки телепорта",
