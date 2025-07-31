@@ -4,7 +4,7 @@ local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/Art
 
 local Run = game:GetService("RunService")
 
-if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 then
+if game.PlaceId == 6403373529 or game.PlaceId == 9015014224 or game.PlaceId == 124596094333302 then
 	local Window = OrionLib:MakeWindow({IntroText = "Slap Battles 👏", IntroIcon = "rbxassetid://15315284749",Name = ("ZybasHub - Slap Battles 👏".." | ".. identifyexecutor()),IntroToggleIcon = "rbxassetid://7734091286", HidePremium = false, SaveConfig = false, IntroEnabled = true, ConfigFolder = "slap battles"})
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/Bendyshechka/NewZybasHub/refs/heads/main/safespot.lua"))()
 	local function EquipGlove(Glove)
